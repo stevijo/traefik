@@ -56,7 +56,7 @@ func (m *Manager) BuildUDP(rootCtx context.Context, serviceName string) (udp.Han
 				continue
 			}
 
-			handler, err := udp.NewProxy(server.Address)
+			handler, err := udp.NewProxy(server.Address, conf.LoadBalancer.ProxyProtocol)
 			if err != nil {
 				logger.Errorf("In udp service %q server %q: %v", serviceQualifiedName, server.Address, err)
 				continue

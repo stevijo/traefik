@@ -24,7 +24,7 @@ func TestProxy_ServeUDP(t *testing.T) {
 		}
 	}))
 
-	proxy, err := NewProxy(backendAddr)
+	proxy, err := NewProxy(backendAddr, nil)
 	require.NoError(t, err)
 
 	proxyAddr := ":8080"
@@ -66,7 +66,7 @@ func TestProxy_ServeUDP_MaxDataSize(t *testing.T) {
 		require.NoError(t, err)
 	}))
 
-	proxy, err := NewProxy(backendAddr)
+	proxy, err := NewProxy(backendAddr, nil)
 	require.NoError(t, err)
 
 	proxyAddr := ":8082"

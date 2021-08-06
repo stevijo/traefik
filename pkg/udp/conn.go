@@ -295,3 +295,11 @@ func (c *Conn) Close() error {
 	delete(c.listener.conns, c.rAddr.String())
 	return nil
 }
+
+func (c *Conn) RemoteAddr() net.Addr {
+	return c.rAddr
+}
+
+func (c *Conn) LocalAddr() net.Addr {
+	return c.listener.pConn.LocalAddr()
+}
