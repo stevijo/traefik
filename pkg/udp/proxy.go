@@ -43,7 +43,18 @@ func (p *Proxy) ServeUDP(conn *Conn) {
 	defer connBackend.Close()
 
 	if p.proxyProtocol != nil && p.proxyProtocol.Version > 0 && p.proxyProtocol.Version < 3 {
-		header := proxyproto.HeaderProxyFromAddrs(byte(p.proxyProtocol.Version), conn.RemoteAddr(), conn.LocalAddr())
+		remoteAddr := conn.RemoteAddr().(*net.UDPAddr)
+		localListener := conn.LocalAddr().(*net.UDPAddr)
+		// workaround use loopback for local address
+		localAddr := &net.UDPAddr{
+			IP:   net.ParseIP("127.0.0.1"),
+			Port: localListener.Port,
+		}
+		if len(remoteAddr.IP.To4()) != net.IPv4len {
+			localAddr.IP = net.IPv6loopback
+		}
+
+		header := proxyproto.HeaderProxyFromAddrs(byte(p.proxyProtocol.Version), remoteAddr, localAddr)
 		if _, err := header.WriteTo(connBackend); err != nil {
 			log.WithoutContext().Errorf("Error while writing proxy protocol headers to backend connection: %v", err)
 			return
