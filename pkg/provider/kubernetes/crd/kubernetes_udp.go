@@ -98,6 +98,15 @@ func (p *Provider) createLoadBalancerServerUDP(client Client, parentNamespace st
 		},
 	}
 
+	if service.ProxyProtocol != nil {
+		udpService.LoadBalancer.ProxyProtocol = &dynamic.ProxyProtocol{}
+		udpService.LoadBalancer.ProxyProtocol.SetDefaults()
+
+		if service.ProxyProtocol.Version != 0 {
+			udpService.LoadBalancer.ProxyProtocol.Version = service.ProxyProtocol.Version
+		}
+	}
+
 	return udpService, nil
 }
 
